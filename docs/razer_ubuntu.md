@@ -73,10 +73,12 @@ The steps below assume verion 16.10 (note that 16.10 is **not** LTS release!).
 
 7. The most complicated part: install NVIDIA drivers. Make sure you read and understand it first! Download and install the latest version of the drivers and then:
     1. Switch to terminal (Ctrl+Alt+F1):
+        
         ```
         sudo service lightdm stop
         sudo NVIDIA_XXX.run --no-opengl-files
         ```
+
         **Note**: ```--no-opengl-files``` option essentially disables using NVIDIA GPU with X manager (graphics). CUDA applications and deep learning toolkits that use GPU will still work just fine.
         During installation, make sure to create public key to sign the driver otherwise it won't load due to secure boot/UEFI.
         Note the location and the name of the key (.DER/.KEY files). Also, select "No" when asked whether to delete private key (you will need it in case you will update drivers in the future). Since the private key remains on the disk, you might want to take some safety precautions (google it for more details).
