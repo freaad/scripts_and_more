@@ -1,14 +1,14 @@
 # Installing Ubuntu in dual-boot configuration on New Razer Blade for deep learning.
 
-This guide shows how to install Ubuntu 16.01 on New Razer Blade with 1060 NVIDIA GPU to use for deep learning. That means the NVIDIA GPU **cannot** be used for any graphics workloads, it will run only CUDA applications (e.g. Caffe, TensorFlow etc).
+This guide shows how to install Ubuntu 16.10 on New Razer Blade with 1060 NVIDIA GPU to use for deep learning. That means the NVIDIA GPU **cannot** be used for any graphics workloads, it will run only CUDA applications, including deep learning toolkits like Caffe, TensorFlow etc.
 
 **Note**: such configuration also brings some inconveniences, like inability to use HDMI port in Ubuntu: in new Razer, HDMI port is connected directly to 1060 GPU so if the GPU is disabled for graphics, you won't be able to use it for external display either. To connect external display, use USB-C port on Razer (with appropriate USB-C -> HDMI adapter if needed).
 
 The guide assumes UEFI and Secure Boot are **enabled**. Ubuntu works just fine with both of them, no need to disable any of these features.
 
-1. Download Ubuntu 16.04.2 ISO image and create bootable USB by following instructions:
+1. Download Ubuntu 16.04 ISO image and create bootable USB by following instructions:
 https://www.ubuntu.com/download/desktop/create-a-usb-stick-on-windows
-Note that you must download at least 16.04.2 or later otherwise (e.g. with just 16.04) many things will not work (WiFi, display resolution etc).
+Note that you must download at least 16.04.**2** or later otherwise (e.g. with just 16.04) many things will not work (WiFi, display resolution etc).
 The steps below assume verion 16.10 (note that 16.10 is **not** LTS release!).
 
 2. Boot from USB.
@@ -32,7 +32,7 @@ The steps below assume verion 16.10 (note that 16.10 is **not** LTS release!).
 
     4.2. When switching to terminal (Ctrl+Alt+F1 etc) you may see annoying messages like ```PCIe Bus Error: severity=Corrected```.
     In this case, update your GRUB config (```/etc/default/grub```) according to this: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1521173
-    While you at editing GRUB, change resolution to native by uncommenting and changing this line:
+    While you at editing GRUB, change GRUB resolution to native by uncommenting and changing this line:
     ```
     GRUB_GFXMODE=1920x1080
     ```
@@ -40,7 +40,7 @@ The steps below assume verion 16.10 (note that 16.10 is **not** LTS release!).
     ```
     sudo nano /usr/share/plymouth/themes/ubuntu-logo/ubuntu-logo.grub
     ```
-    (use 0,0,0,0 to set black color)
+    (use ```0,0,0,0``` to set black color)
 
     Don't forget to run ```sudo update-grub``` after making the changes.
 
