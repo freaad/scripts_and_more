@@ -80,8 +80,10 @@ The steps below assume verion 16.10 (note that 16.10 is **not** LTS release!).
         ```
 
         **Note**: ```--no-opengl-files``` option essentially disables using NVIDIA GPU with X manager (graphics). CUDA applications and deep learning toolkits that use GPU will still work just fine.
+        
         During installation, make sure to create public key to sign the driver otherwise it won't load due to secure boot/UEFI.
         Note the location and the name of the key (.DER/.KEY files). Also, select "No" when asked whether to delete private key (you will need it in case you will update drivers in the future). Since the private key remains on the disk, you might want to take some safety precautions (google it for more details).
+        
         Reboot. Try running ```nvidia-smi```, it should fail with something like ```module not loaded``` error. This is expected as we haven't enrolled certificates to secure boot yet.
     2. Now import the key using mokutil tool:
         ```
