@@ -116,6 +116,23 @@ The steps below assume verion 16.10 (note that 16.10 is **not** LTS release!).
     ```
     sudo ./NVIDIA-Linux-x86_64-378.13.run --no-opengl-files --module-signing-secret-key=/usr/share/nvidia/nvidia-modsign-key-XXX.key --module-signing-public-key=/usr/share/nvidia/nvidia-modsign-crt-XXX.der
     ```
+    Note: you can use the same keys to sign other kernel modules, see Appendix.
 8. Now reboot and check the Windows boot is still working (it should :) ).
 
-##### That's it!
+### That's it!
+
+#### Appendix
+
+##### Installing kernel modules in secure boot
+Installing kernel modules (e.g. drivers) can be a bit tricky when secure boot is enabled. Next section demonstrates how to install a driver for USB WiFi AC adapter (AlfaNetworks AWUS036AC). Installing with ```sudo apt install rtl8812au-dkms``` currently [fails](https://bugs.launchpad.net/ubuntu/+source/rtl8812au/+bug/1629235) on 16.04 with kernel 4.8 and later, so alternative method of building a kernel module from sources and installing using DKMS is required. 
+1. Get latest version of the driver from the [repo](https://github.com/abperiasamy/rtl8812AU_8821AU_linux).
+2. Build and install with DKMS:
+    ```
+    sudo make -f Makefile.dkms install
+    ```
+    Run ```sudo modprobe rtl8812au``` - you should see an error message that module is not loaded due to missing key.
+3. Sign the module using the key created earlier for NVIDIA driver:
+    ```
+    sudo /usr/src/linux-headers-$(uname -r)/scripts/sign-file sha256 /path_to_KEY_file/nvidia-modsign-key-XXX.key /path_to_DER_file/nvidia-modsign-crt-XXX.der /lib/modules/$(uname -r)/updates/dkms/rtl8812au.ko
+    ```
+4. Reboot and run ```sudo modprobe rtl8812au``` again - it should work fine now (adapter should work fine as well).
