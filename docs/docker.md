@@ -35,3 +35,7 @@ pip install --ignore-installed --upgrade https://storage.googleapis.com/tensorfl
 ```
 pip install eventlet flask-socketio keras
 ```
+### In case of issues with MKL run the following before running the scripts (e.g. video.py):
+```
+export LD_PRELOAD=/root/anaconda3/lib/libmkl_core.so:/root/anaconda3/lib/libmkl_sequential.so
+```
