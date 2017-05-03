@@ -136,3 +136,24 @@ Installing kernel modules (e.g. drivers) can be a bit tricky when secure boot is
     sudo /usr/src/linux-headers-$(uname -r)/scripts/sign-file sha256 /path_to_KEY_file/nvidia-modsign-key-XXX.key /path_to_DER_file/nvidia-modsign-crt-XXX.der /lib/modules/$(uname -r)/updates/dkms/rtl8812au.ko
     ```
 4. Reboot and run ```sudo modprobe rtl8812au``` again - it should work fine now (adapter should work fine as well).
+
+Note that it might be necessary to re-install the driver after the kernel updates in case the kernel version changes otherwise the device will not work properly.
+The previous version of the driver needs to be removed from DKMS:
+1. Check the driver version currently registered in DKMS:
+```
+sudo dkms status
+```
+You might see something like:
+```
+rtl8812au, 4.3.14, 4.8.0-38-generic, x86_64: installed
+rtl8812au, 4.3.14, 4.8.0-39-generic, x86_64: installed
+```
+2. Uninstall the current version of the driver:
+```
+sudo dkms remove rtl8812au/4.3.14 --all
+```
+Check that driver was uninstalled using ```dkms status``` again.
+3. Rebuild and re-sign the driver again by following previously described steps.
+
+Annoying, yes...
+
