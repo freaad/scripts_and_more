@@ -11,7 +11,7 @@ docker build -t erle-sim:indigo -f Dockerfile.indigo .
 This command will create a Docker image with the tag ```erle-sim:indigo```. Once the build is finished, you can verify that the image is built by running ```docker images``` command.
 
 ## Creating Docker container
-In order to be able to run Gazebo from the Docker container, you need to connect host's X server to the Docker container. A good tutorial on various methods is documented on the [ROS Wiki](http://wiki.ros.org/docker/Tutorials/GUI), here we use the most simplest (and insecure!) way.
+In order to be able to run Gazebo from the Docker container, you need to connect host's X server to the Docker container. A good tutorial on various methods is documented on the [ROS Wiki](http://wiki.ros.org/docker/Tutorials/GUI), here we use the most simple (and insecure!) way.
 1. Create Docker container:
     ```
     docker run -it --network=host -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix${DISPLAY} --name=erle-sim erle-sim:indigo bash
@@ -31,7 +31,7 @@ In order to be able to run Gazebo from the Docker container, you need to connect
 ### Troubleshooting
 In case you see messages like ```failed to load driver``` while executing step 3 **and** no Gazebo window opens up, you might be missing drivers. The current Docker script already contains command that installs Mesa drivers (```libgl1-mesa-dri```) but that might not be enough so try googling for more information.
 ## Testing
-Once the container is created, try running simulator. For example, to run Rover simulator, run the following commands from the container:
+Once the container is created, try running the simulator. For example, to run Rover simulator, run the following commands from the container:
 ```
 source ~/simulation/ros_catkin_ws/devel/setup.bash
 cd ~/simulation/ardupilot/APMrover2/
@@ -39,7 +39,7 @@ cd ~/simulation/ardupilot/APMrover2/
 # once MAVProxy has launched completely, load the parameters
 param load ~/simulation/ardupilot/Tools/Frame_params/3DR_Rover.param
 ```
-Now open another terminal to the currently running Docker container:
+Now connect another terminal to the currently running Docker container:
 ```
 docker exec -it erle-sim bash
 ```
@@ -51,4 +51,4 @@ roslaunch ardupilot_sitl_gazebo_plugin rover_spawn.launch
 If everything was setup correctly, you should see Gazebo window with Rover model that you can control from the first terminal using MAVProxy commands:
 ![Gazebo Erle Rover](./images/gazebo.png)
 Some of the MAVProxy commands are described [here](http://docs.erlerobotics.com/simulation/vehicles/erle_rover/tutorial_1).
-You can also use ```run_erle_sim.sh``` script to create new container or attach to a running container.
+You can also use ```run_erle_sim.sh``` script to create a new container or attach to the already running container.
