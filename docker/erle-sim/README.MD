@@ -11,7 +11,7 @@ docker build -t erle-sim:indigo -f Dockerfile.indigo .
 This command will create a Docker image with the tag ```erle-sim:indigo```. Once the build is finished, you can verify that the image is built by running ```docker images``` command.
 
 ## Creating Docker container
-In order to be able to run Gazebo from the Docker container, you need to connect host's X server to the Docker container. A good tutorial on various methods is documented on the [ROS Wiki](http://wiki.ros.org/docker/Tutorials/GUI), here we use the most simplest (and insecure!) way.
+In order to be able to run Gazebo from the Docker container, you need to connect host's X server to the Docker container. A good tutorial on various methods is documented on the [ROS Wiki](http://wiki.ros.org/docker/Tutorials/GUI), here we use the most simple (and insecure!) way.
 1. Create Docker container:
     ```sh
     docker run -it --network=host -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix${DISPLAY} --name=erle-sim erle-sim:indigo bash
