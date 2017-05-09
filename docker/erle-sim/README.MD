@@ -29,11 +29,7 @@ In order to be able to run Gazebo from the Docker container, you need to connect
     ```
     You should see Gazebo window.
 ### Troubleshooting
-In case you see messages like in ```failed to load driver: i965``` while executing step 3 and no Gazebo window opens up, you might be missing drivers. In such case, try installing the drivers in your Docker container:
-```
-apt-get -y install libgl1-mesa-dri
-```
-and try running Gazebo again. If that does not help - google it.
+In case you see messages like ```failed to load driver``` while executing step 3 **and** no Gazebo window opens up, you might be missing drivers. The current Docker script already contains command that installs Mesa drivers (```libgl1-mesa-dri```) but that might not be enough so try googling for more information.
 ## Testing
 Once the container is created, try running simulator. For example, to run Rover simulator, run the following commands from the container:
 ```
@@ -41,13 +37,13 @@ source ~/simulation/ros_catkin_ws/devel/setup.bash
 cd ~/simulation/ardupilot/APMrover2/
 ../Tools/autotest/sim_vehicle.sh -j 4 -f Gazebo
 # once MAVProxy has launched completely, load the parameters
-param load /[path_to_your_home_directory]/simulation/ardupilot/Tools/Frame_params/3DR_Rover.param
+param load ~/simulation/ardupilot/Tools/Frame_params/3DR_Rover.param
 ```
-Now create another terminal to the currently running Docker container:
+Now open another terminal to the currently running Docker container:
 ```
 docker exec -it erle-sim bash
 ```
-and run the following commands:
+and run the following commands: 
 ```
 source ~/simulation/ros_catkin_ws/devel/setup.bash
 roslaunch ardupilot_sitl_gazebo_plugin rover_spawn.launch
@@ -55,3 +51,4 @@ roslaunch ardupilot_sitl_gazebo_plugin rover_spawn.launch
 If everything was setup correctly, you should see Gazebo window with Rover model that you can control from the first terminal using MAVProxy commands:
 ![Gazebo Erle Rover](./images/gazebo.png)
 Some of the MAVProxy commands are described [here](http://docs.erlerobotics.com/simulation/vehicles/erle_rover/tutorial_1).
+You can also use ```run_erle_sim.sh``` script to create new container or attach to a running container.
