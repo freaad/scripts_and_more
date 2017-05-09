@@ -1,0 +1,117 @@
+FROM ubuntu:16.04
+
+# Build with:
+# docker build -t erle-sim:kinetic - < Dockerfile.indigo
+
+ENV HOME /root
+
+# Install required components first.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gawk make git curl cmake g++ \
+    python-dev python-pip python-matplotlib python-serial python-wxgtk3.0 python-scipy python-opencv python-numpy python-pyparsing python-setuptools ccache realpath libopencv-dev \
+    libxml2-dev libxslt1-dev wget lsb-release unzip
+
+# Python packages
+RUN pip install wheel && \
+    pip install future && \
+    pip install pymavlink catkin_pkg --upgrade
+
+# MAVProxy components.
+RUN pip install MAVProxy==1.5.2
+
+# ArUco
+RUN wget "https://downloads.sourceforge.net/project/aruco/2.0.19/aruco-2.0.19.zip?r=&ts=1494009072&use_mirror=svwh" -O aruco-2.0.19.zip && \
+    unzip aruco-2.0.19.zip  && \
+    cd aruco-2.0.19/        && \
+    mkdir build && cd build && \
+    cmake ..                && \
+    make                    && \
+    make install
+
+# APM
+WORKDIR $HOME
+RUN mkdir -p simulation && \
+    cd simulation && \
+    git clone https://github.com/erlerobot/ardupilot -b gazebo
+
+# ROS Kinetic
+WORKDIR $HOME
+# 1. Enable ROS packaging.
+RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list' && \
+    apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 0xB01FA116 && \
+    apt-get update
+# 2. Install ROS base and MAVROS
+RUN apt-get install -y ros-kinetic-ros-base ros-kinetic-mavros ros-kinetic-mavros-extras
+# 3. Init
+RUN rosdep init && rosdep update
+# 4. Post-install
+RUN echo "source /opt/ros/kinetic/setup.bash" >> $HOME/.bashrc
+RUN /bin/bash -c "source /opt/ros/indigo/setup.bash"
+
+RUN sh -c 'echo "deb http://packages.osrfoundation.org/drc/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/drc-latest.list' && \
+    wget http://packages.osrfoundation.org/drc.key -O - | apt-key add - && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends drcsim
+
+# Install ROS packages
+RUN apt-get install -y --no-install-recommends python-rosinstall \
+                        ros-kinetic-octomap-msgs    \
+                        ros-kinetic-joy             \
+                        ros-kinetic-geodesy         \
+                        ros-kinetic-octomap-ros     \
+                        ros-kinetic-mavlink         \
+                        ros-kinetic-control-toolbox \
+                        ros-kinetic-transmission-interface \
+                        ros-kinetic-joint-limits-interface \
+                        ros-kinetic-image-transport \
+                        ros-kinetic-cv-bridge \
+                        ros-kinetic-angles \
+                        ros-kinetic-polled-camera \
+                        ros-kinetic-camera-info-manager \
+                        ros-kinetic-controller-manager
+
+# Create ROS workspace
+WORKDIR $HOME
+RUN mkdir -p simulation/ros_catkin_ws/src && \
+    cd simulation/ros_catkin_ws/src && \
+    catkin_init_workspace && \
+    cd .. && \
+    catkin_make && \
+    /bin/bash -c "source devel/setup.bash"
+
+# Get packages
+WORKDIR $HOME/simulation/ros_catkin_ws/src
+
+RUN git clone https://github.com/ros-drivers/driver_common
+    git clone https://github.com/erlerobot/ardupilot_sitl_gazebo_plugin && \
+    git clone https://github.com/erlerobot/rotors_simulator -b sonar_plugin && \
+    git clone https://github.com/PX4/mav_comm.git && \
+    git clone https://github.com/ethz-asl/glog_catkin.git && \
+    git clone https://github.com/catkin/catkin_simple.git && \
+    git clone https://github.com/erlerobot/mavros.git && \
+    git clone https://github.com/ros-simulation/gazebo_ros_pkgs.git -b kinetic-devel
+    #git clone https://github.com/tu-darmstadt-ros-pkg/hector_gazebo/ && \
+    #git clone https://github.com/erlerobot/gazebo_cpp_examples && \
+    #git clone https://github.com/erlerobot/gazebo_python_examples
+
+# Install Gazebo
+WORKDIR $HOME
+RUN sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -sc) main" > /etc/apt/sources.list.d/gazebo-stable.list' && \
+    wget http://packages.osrfoundation.org/gazebo.key -O - | apt-key add - && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends gazebo8 libgazebo8-dev
+
+# Make packages
+WORKDIR $HOME/simulation/ros_catkin_ws
+RUN catkin_make --pkg mav_msgs mavros_msgs gazebo_msgs && \
+    /bin/bash -c "source devel/setup.bash" && \
+    catkin_make -j 4
+
+# Gazebo models
+WORKDIR $HOME
+RUN mkdir -p .gazebo/models && \
+    cd .gazebo/models && \
+    git clone https://github.com/erlerobot/erle_gazebo_models
+
+# Rover
+WORKDIR $HOME/simulation
