@@ -1,4 +1,4 @@
-# Using NVIDIA Jetons TX1/TX2 as a companion computer with Erle Brain 3
+# Using NVIDIA Jetson TX1/TX2 as a companion computer with Erle Brain 3
 This document describes how to connect Jetson TX1/2 board to Erle Brain 3 (EB3). In this configuraiton, EB3 is used to run MAVROS only to control a vehicle (e.g. rover), the rest of tne nodes are running on Jetson and ground control station (laptop).
 
 ## Connecting Jetson and Erle Brain
@@ -19,13 +19,17 @@ In case there are more nodes than just Jetson and EB3 **and** nodes that connect
 **Note**: if you just have Jetson + EB3, this step is not required.
 
 Before making static changes to a Linux network configuration, it is a good idea to test everything by using dynamic configuration. If something does not work, rebooting will restore the previous configuration.
+
 ##### Dynamic configuration
 1. Check that IP4 forwarding is enabled on EB3: `sudo sysctl net.ipv4.ip_forward` Enable if needed by running this command: `sudo sysctl -w net.ipv4.ip_forward=1` 
-2. Check the IP addresses of EB3, Jetson and GCS. It might be something like `10.42.1.1` for Jetson, `10.0.0.2` for GCS and 2 addresses on EB3: `10.0.0.1` for WiFi interface and `10.42.1.86` for Ethernet. You can further verify that you cannot ping GCS from Jetson: `10.0.0.2` (`connect: Network is unreachable`) and vice versa.
-3. Setup routing on Jetson to GCS via EB3 Ethernet NIC: `sudo ip route add 10.0.0.0/24 via 10.42.1.86`.
-4. Setup routing on GCS to Jetson via EB3 WiFi NIC: `sudo ip route add 10.42.1.0/24 via 10.0.0.1`
+2. Check the IP addresses of EB3, Jetson and GCS. It might be something like `10.42.1.1` for Jetson, `10.0.0.2` for GCS and 2 addresses on EB3: `10.0.0.1` for WiFi interface and `10.42.1.86` for Ethernet. You can further verify that you cannot ping GCS from Jetson: `ping 10.0.0.2` (`connect: Network is unreachable`) and vice versa.
+3. Setup routing on **Jetson to GCS** via EB3 Ethernet NIC: `sudo ip route add 10.0.0.0/24 via 10.42.1.86`.
+4. Setup routing on **GCS to Jetson** via EB3 WiFi NIC: `sudo ip route add 10.42.1.0/24 via 10.0.0.1`
 5. Now check that everything is working by pinging Jetson from GCS and vice versa.
 **Note**: your Jetson IP addresses can be different, double check by running `ifconfig`
+
+##### Dynamic configuration
+TBD
 
 ### Connecting Jetson to EB WiFi AP
 Connect Jetson to EB3 WiFi AP. You can make the Jetson to connect automatically by modifying network interface file (google for more info).
@@ -42,6 +46,6 @@ roscore &
 rosrun mavros mavros_node _fcu_url:="udp://:6001@" _gcs_url:="udp://10.0.0.1:9000@10.0.0.2:6000?ids=1,255,252"
 ```
 3. Verify that messages can be propagated between the clients by running `rostopic list` and then `rostopic echo /mavros/state`. If everything is setup correctly, the first command should display list of topics, while the second - start producing MAVROS state in the console. If you don't see any output from the second command - check your IP addresses and routing again.
-4. Optional: in case you have more than just Jetson (e.g. GCS) that require message exchange, verify that it works. For exampple, if GCS is runnin joystick node with topic `/joy` that is subscribed to a client running on Jetson, verify that Jetson can receive messages by running the following on Jetson: `rostopic echo /joy`
+4. Optional: in case you have more than just Jetson (e.g. GCS) that require message exchange, verify that it works. For example, if GCS is running joystick node with topic `/joy` that is subscribed by a client running on Jetson, verify that Jetson can receive messages by running the following on Jetson: `rostopic echo /joy`
 
 That's it for now.
