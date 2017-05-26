@@ -3,8 +3,8 @@ This document describes how to connect Jetson TX1/2 board to Erle Brain 3 (EB3).
 
 ## Connecting Jetson and Erle Brain
 There are 2 ways to connect Jetson and EB3:
-1. Connect Jetson and EB3 using Ethernet protocol. This is a more secure/reliable/faster method and should be default option.
-2. Connect Jetson to EB3 WiFi access point (AP). This is a less secure/reliable method. For example, it might be used in case Jetson carrier board does not have Ethernet port. This method also allows to keep Jetson WiFi AP intact and connect to the Jetson via WiFi if needed.
+1. Connect Jetson and EB3 using Ethernet protocol. This is a more secure/reliable/faster method and should be default option. This method also allows to keep Jetson WiFi AP intact and connect to the Jetson via WiFi if needed.
+2. Connect Jetson to EB3 WiFi access point (AP). This is a less secure/reliable method. For example, it might be used in case Jetson carrier board does not have Ethernet port.
 
 ### Connecting Jetson and EB3 using Ethernet
 1. Connect Jetson carrier board and EB3 using ordinary Ethernet cable (note: you do NOT need to use crossover cable, it's a thing from the past).
