@@ -28,8 +28,8 @@ Before making static changes to a Linux network configuration, it is a good idea
 5. Now check that everything is working by pinging Jetson from GCS and vice versa.
 **Note**: your Jetson IP addresses can be different, double check by running `ifconfig`
 
-##### Dynamic configuration
-TBD
+##### Static configuration
+TBD, google for now
 
 ### Connecting Jetson to EB WiFi AP
 Connect Jetson to EB3 WiFi AP. You can make the Jetson to connect automatically by modifying network interface file (google for more info).
