@@ -33,7 +33,7 @@ TBD, google for now
 
 ### Connecting Jetson to EB WiFi AP
 Connect Jetson to EB3 WiFi AP. You can make the Jetson to connect automatically by modifying network interface file (google for more info).
-Note that by default EB3 allows only one client, if you need more than modify DNS Masquerading configuration file located at `/etc/dnsmasq.conf`. Refer to [DNSMASQ](http://www.thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html) documentation for more details.
+Note that by default EB3 allows only one client, if you need more then modify DNS Masquerading configuration file located at `/etc/dnsmasq.conf`. Refer to [DNSMASQ](http://www.thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html) documentation for more details.
 
 ## Running ROS nodes
 1. Set the ROS master env variable on every machine except EB3, using appropriate IP. For example, on Jetson it can be: `export ROS_MASTER_URI=http://10.42.1.86:11311` while on GCS: `export ROS_MASTER_URI=http://10.0.0.1:11311`
