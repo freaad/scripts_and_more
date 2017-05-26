@@ -38,7 +38,7 @@ cd ~/simulation/ardupilot/APMrover2/
 ../Tools/autotest/sim_vehicle.sh -j 4 -f Gazebo
 # once MAVProxy has launched completely, load the parameters
 param load /[full_path_to_your_home_directory]/simulation/ardupilot/Tools/Frame_params/3DR_Rover.param
-# For exampple: param load /root/simulation/ardupilot/Tools/Frame_params/3DR_Rover.param
+# For example: param load /root/simulation/ardupilot/Tools/Frame_params/3DR_Rover.param
 ```
 Now connect another terminal to the currently running Docker container:
 ```sh

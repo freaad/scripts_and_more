@@ -35,7 +35,7 @@ git clone https://github.com/erlerobot/gazebo_python_examples
 cd ..
 catkin_make --pkg mav_msgs mavros_msgs gazebo_msgs
 source devel/setup.bash
-catkin_make -j 4
+catkin_make -j `nproc`
 
 # Gazebo models
 cd $WDIR
